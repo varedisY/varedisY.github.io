@@ -4,6 +4,7 @@
 
 // Typography
 
+
 p,
 h1,
 h2,
@@ -517,7 +518,7 @@ footer.sticky-bottom {
 
   h1 {
     color: var(--global-theme-color);
-    font-size: 5rem;
+    font-size: calc(1.525rem + 3.3vw);
   }
 }
 
