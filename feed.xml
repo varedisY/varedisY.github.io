@@ -1,4 +1,274 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en"><generator uri="https://jekyllrb.com/" version="4.3.3">Jekyll</generator><link href="https://varedisy.github.io/feed.xml" rel="self" type="application/atom+xml"/><link href="https://varedisy.github.io/" rel="alternate" type="text/html" hreflang="en"/><updated>2024-08-23T10:32:33+00:00</updated><id>https://varedisy.github.io/feed.xml</id><title type="html">not_on_stack</title><entry><title type="html">Comprehensive Guide to NgRx SignalStore for State Management in Angular</title><link href="https://varedisy.github.io/blog/2024/ngrx-store-angular/" rel="alternate" type="text/html" title="Comprehensive Guide to NgRx SignalStore for State Management in Angular"/><published>2024-08-22T12:00:00+00:00</published><updated>2024-08-22T12:00:00+00:00</updated><id>https://varedisy.github.io/blog/2024/ngrx-store-angular</id><content type="html" xml:base="https://varedisy.github.io/blog/2024/ngrx-store-angular/"><![CDATA[<h2 id="introduction">Introduction</h2> <p>NgRx SignalStore is a powerful state management solution for Angular applications. It leverages Signals to create stores in a clear, declarative manner, providing flexibility and ease of use. SignalStore’s opinionated and extensible design makes it an excellent choice for managing both local and global state in Angular applications.</p> <p>In this guide, we’ll explore how to create and use SignalStores, manage state, define computed signals and methods, and integrate with RxJS for reactive programming.</p> <h2 id="prerequisites">Prerequisites</h2> <ul> <li> <p><strong>Install NgRx Store and Effects:</strong></p> <p>Run the following command to install the core NgRx libraries:</p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ng add @ngrx/store @ngrx/effects @ngrx/entity 
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en"><generator uri="https://jekyllrb.com/" version="4.3.3">Jekyll</generator><link href="https://varedisy.github.io/feed.xml" rel="self" type="application/atom+xml"/><link href="https://varedisy.github.io/" rel="alternate" type="text/html" hreflang="en"/><updated>2024-08-27T17:34:08+00:00</updated><id>https://varedisy.github.io/feed.xml</id><title type="html">not_on_stack</title><entry><title type="html">Entity Management with NgRx SignalStore: Streamlining State Management in Angular</title><link href="https://varedisy.github.io/blog/2024/ngrx-store-entities-angular/" rel="alternate" type="text/html" title="Entity Management with NgRx SignalStore: Streamlining State Management in Angular"/><published>2024-08-27T12:00:00+00:00</published><updated>2024-08-27T12:00:00+00:00</updated><id>https://varedisy.github.io/blog/2024/ngrx-store-entities-angular</id><content type="html" xml:base="https://varedisy.github.io/blog/2024/ngrx-store-entities-angular/"><![CDATA[<h2 id="introduction-to-entity-management">Introduction to Entity Management</h2> <p>Managing entities efficiently is a crucial aspect of state management in any application. NgRx SignalStore offers an elegant solution for handling entity collections through the <code class="language-plaintext highlighter-rouge">@ngrx/signals/entities</code> plugin. This plugin simplifies the management of entities, allowing you to focus on the logic and features of your Angular application without getting bogged down by the intricacies of state management.</p> <p>If you have never used NgRx SignalStore before, refer to the article <a href="https://varedisy.github.io/blog/2024/ngrx-store-angular/">Getting Started with NgRx SignalStore</a>.</p> <h2 id="using-withentities-feature">Using <code class="language-plaintext highlighter-rouge">withEntities</code> Feature</h2> <p>The <code class="language-plaintext highlighter-rouge">withEntities</code> feature is the cornerstone of entity management in SignalStore. It automatically generates signals that provide access to entity collections, including:</p> <ul> <li><strong>ids</strong>: A signal that returns an array of all entity IDs.</li> <li><strong>entityMap</strong>: A signal that returns a map of entities keyed by their IDs.</li> <li><strong>entities</strong>: A signal that returns an array of all entities, making it easy to work with the entire collection.</li> </ul> <p>Here’s an example of how to define a basic SignalStore with entity management:</p> <div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">computed</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@angular/core</span><span class="dl">'</span><span class="p">;</span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">signalStore</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@ngrx/signals</span><span class="dl">'</span><span class="p">;</span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">withEntities</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@ngrx/signals/entities</span><span class="dl">'</span><span class="p">;</span>
+
+<span class="kd">type</span> <span class="nx">Todo</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">id</span><span class="p">:</span> <span class="kr">number</span><span class="p">;</span>
+  <span class="nl">text</span><span class="p">:</span> <span class="kr">string</span><span class="p">;</span>
+  <span class="nl">completed</span><span class="p">:</span> <span class="nx">boolean</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">export</span> <span class="kd">const</span> <span class="nx">TodosStore</span> <span class="o">=</span> <span class="nf">signalStore</span><span class="p">(</span>
+  <span class="nx">withEntities</span><span class="o">&lt;</span><span class="nx">Todo</span><span class="o">&gt;</span><span class="p">()</span>
+<span class="p">);</span>
+</code></pre></div></div> <p>This setup gives you access to entity-specific signals, such as <code class="language-plaintext highlighter-rouge">ids</code>, <code class="language-plaintext highlighter-rouge">entityMap</code>, and <code class="language-plaintext highlighter-rouge">entities</code>, which can be used to manage and display entities in your application.</p> <h2 id="leveraging-entity-updaters">Leveraging Entity Updaters</h2> <p>Entity updaters are functions provided by the <code class="language-plaintext highlighter-rouge">@ngrx/signals/entities</code> plugin to manipulate the entity collections within your store. They work seamlessly with the <code class="language-plaintext highlighter-rouge">patchState</code> function to ensure the store is updated predictably.</p> <p>Here’s an example of how to add methods to the <code class="language-plaintext highlighter-rouge">TodosStore</code> for common operations:</p> <div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">patchState</span><span class="p">,</span> <span class="nx">signalStore</span><span class="p">,</span> <span class="nx">withMethods</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@ngrx/signals</span><span class="dl">'</span><span class="p">;</span>
+<span class="k">import</span> <span class="p">{</span>
+  <span class="nx">addEntity</span><span class="p">,</span>
+  <span class="nx">removeEntities</span><span class="p">,</span>
+  <span class="nx">updateAllEntities</span><span class="p">,</span>
+  <span class="nx">withEntities</span><span class="p">,</span>
+<span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@ngrx/signals/entities</span><span class="dl">'</span><span class="p">;</span>
+
+<span class="kd">type</span> <span class="nx">Todo</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">id</span><span class="p">:</span> <span class="kr">number</span><span class="p">;</span>
+  <span class="nl">text</span><span class="p">:</span> <span class="kr">string</span><span class="p">;</span>
+  <span class="nl">completed</span><span class="p">:</span> <span class="nx">boolean</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">export</span> <span class="kd">const</span> <span class="nx">TodosStore</span> <span class="o">=</span> <span class="nf">signalStore</span><span class="p">(</span>
+  <span class="nx">withEntities</span><span class="o">&lt;</span><span class="nx">Todo</span><span class="o">&gt;</span><span class="p">(),</span>
+  <span class="nf">withMethods</span><span class="p">((</span><span class="nx">store</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">({</span>
+    <span class="nf">addTodo</span><span class="p">(</span><span class="na">todo</span><span class="p">:</span> <span class="nx">Todo</span><span class="p">):</span> <span class="k">void</span> <span class="p">{</span>
+      <span class="nf">patchState</span><span class="p">(</span><span class="nx">store</span><span class="p">,</span> <span class="nf">addEntity</span><span class="p">(</span><span class="nx">todo</span><span class="p">));</span>
+    <span class="p">},</span>
+    <span class="nf">removeEmptyTodos</span><span class="p">():</span> <span class="k">void</span> <span class="p">{</span>
+      <span class="nf">patchState</span><span class="p">(</span><span class="nx">store</span><span class="p">,</span> <span class="nf">removeEntities</span><span class="p">(({</span> <span class="nx">text</span> <span class="p">})</span> <span class="o">=&gt;</span> <span class="o">!</span><span class="nx">text</span><span class="p">));</span>
+    <span class="p">},</span>
+    <span class="nf">completeAllTodos</span><span class="p">():</span> <span class="k">void</span> <span class="p">{</span>
+      <span class="nf">patchState</span><span class="p">(</span><span class="nx">store</span><span class="p">,</span> <span class="nf">updateAllEntities</span><span class="p">({</span> <span class="na">completed</span><span class="p">:</span> <span class="kc">true</span> <span class="p">}));</span>
+    <span class="p">},</span>
+  <span class="p">}))</span>
+<span class="p">);</span>
+</code></pre></div></div> <h2 id="custom-entity-identifiers">Custom Entity Identifiers</h2> <p>If your entities don’t have an <code class="language-plaintext highlighter-rouge">id</code> property, you can use a custom identifier by providing a selector function. This selector will be used whenever you add, update, or remove entities from the store.</p> <div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">patchState</span><span class="p">,</span> <span class="nx">signalStore</span><span class="p">,</span> <span class="nx">withMethods</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@ngrx/signals</span><span class="dl">'</span><span class="p">;</span>
+<span class="k">import</span> <span class="p">{</span>
+  <span class="nx">addEntities</span><span class="p">,</span>
+  <span class="nx">removeEntity</span><span class="p">,</span>
+  <span class="nx">SelectEntityId</span><span class="p">,</span>
+  <span class="nx">setEntity</span><span class="p">,</span>
+  <span class="nx">updateAllEntities</span><span class="p">,</span>
+  <span class="nx">withEntities</span><span class="p">,</span>
+<span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@ngrx/signals/entities</span><span class="dl">'</span><span class="p">;</span>
+
+<span class="kd">type</span> <span class="nx">Todo</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">key</span><span class="p">:</span> <span class="kr">number</span><span class="p">;</span>
+  <span class="nl">text</span><span class="p">:</span> <span class="kr">string</span><span class="p">;</span>
+  <span class="nl">completed</span><span class="p">:</span> <span class="nx">boolean</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="kd">const</span> <span class="nx">selectId</span><span class="p">:</span> <span class="nx">SelectEntityId</span><span class="o">&lt;</span><span class="nx">Todo</span><span class="o">&gt;</span> <span class="o">=</span> <span class="p">(</span><span class="nx">todo</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">todo</span><span class="p">.</span><span class="nx">key</span><span class="p">;</span>
+
+<span class="k">export</span> <span class="kd">const</span> <span class="nx">TodosStore</span> <span class="o">=</span> <span class="nf">signalStore</span><span class="p">(</span>
+  <span class="nx">withEntities</span><span class="o">&lt;</span><span class="nx">Todo</span><span class="o">&gt;</span><span class="p">(),</span>
+  <span class="nf">withMethods</span><span class="p">((</span><span class="nx">store</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">({</span>
+    <span class="nf">addTodos</span><span class="p">(</span><span class="na">todos</span><span class="p">:</span> <span class="nx">Todo</span><span class="p">[]):</span> <span class="k">void</span> <span class="p">{</span>
+      <span class="nf">patchState</span><span class="p">(</span><span class="nx">store</span><span class="p">,</span> <span class="nf">addEntities</span><span class="p">(</span><span class="nx">todos</span><span class="p">,</span> <span class="p">{</span> <span class="nx">selectId</span> <span class="p">}));</span>
+    <span class="p">},</span>
+    <span class="nf">setTodo</span><span class="p">(</span><span class="na">todo</span><span class="p">:</span> <span class="nx">Todo</span><span class="p">):</span> <span class="k">void</span> <span class="p">{</span>
+      <span class="nf">patchState</span><span class="p">(</span><span class="nx">store</span><span class="p">,</span> <span class="nf">setEntity</span><span class="p">(</span><span class="nx">todo</span><span class="p">,</span> <span class="p">{</span> <span class="nx">selectId</span> <span class="p">}));</span>
+    <span class="p">},</span>
+    <span class="nf">completeAllTodos</span><span class="p">():</span> <span class="k">void</span> <span class="p">{</span>
+      <span class="nf">patchState</span><span class="p">(</span>
+        <span class="nx">store</span><span class="p">,</span>
+        <span class="nf">updateAllEntities</span><span class="p">({</span> <span class="na">completed</span><span class="p">:</span> <span class="kc">true</span> <span class="p">},</span> <span class="p">{</span> <span class="nx">selectId</span> <span class="p">})</span>
+      <span class="p">);</span>
+    <span class="p">},</span>
+    <span class="nf">removeTodo</span><span class="p">(</span><span class="na">key</span><span class="p">:</span> <span class="kr">number</span><span class="p">):</span> <span class="k">void</span> <span class="p">{</span>
+      <span class="nf">patchState</span><span class="p">(</span><span class="nx">store</span><span class="p">,</span> <span class="nf">removeEntity</span><span class="p">(</span><span class="nx">key</span><span class="p">));</span>
+    <span class="p">},</span>
+  <span class="p">}))</span>
+<span class="p">);</span>
+</code></pre></div></div> <h2 id="named-entity-collections">Named Entity Collections</h2> <p>The <code class="language-plaintext highlighter-rouge">withEntities</code> feature allows for managing multiple entity collections within a single store by specifying a custom prefix for each collection. This is particularly useful when dealing with related data types.</p> <div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">signalStore</span><span class="p">,</span> <span class="kd">type</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@ngrx/signals</span><span class="dl">'</span><span class="p">;</span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">withEntities</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@ngrx/signals/entities</span><span class="dl">'</span><span class="p">;</span>
+
+<span class="kd">type</span> <span class="nx">Book</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">id</span><span class="p">:</span> <span class="kr">number</span><span class="p">;</span>
+  <span class="nl">title</span><span class="p">:</span> <span class="kr">string</span><span class="p">;</span>
+  <span class="nl">authorId</span><span class="p">:</span> <span class="kr">number</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="kd">type</span> <span class="nx">Author</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">id</span><span class="p">:</span> <span class="kr">number</span><span class="p">;</span>
+  <span class="nl">name</span><span class="p">:</span> <span class="kr">string</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">export</span> <span class="kd">const</span> <span class="nx">LibraryStore</span> <span class="o">=</span> <span class="nf">signalStore</span><span class="p">(</span>
+  <span class="nf">withEntities</span><span class="p">({</span> <span class="na">entity</span><span class="p">:</span> <span class="kd">type</span><span class="o">&lt;</span><span class="nx">Book</span><span class="o">&gt;</span><span class="p">(),</span> <span class="na">collection</span><span class="p">:</span> <span class="dl">'</span><span class="s1">book</span><span class="dl">'</span> <span class="p">}),</span>
+  <span class="nf">withEntities</span><span class="p">({</span> <span class="na">entity</span><span class="p">:</span> <span class="kd">type</span><span class="o">&lt;</span><span class="nx">Author</span><span class="o">&gt;</span><span class="p">(),</span> <span class="na">collection</span><span class="p">:</span> <span class="dl">'</span><span class="s1">author</span><span class="dl">'</span> <span class="p">}),</span>
+  <span class="nf">withMethods</span><span class="p">((</span><span class="nx">store</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">({</span>
+    <span class="nf">addBook</span><span class="p">(</span><span class="na">book</span><span class="p">:</span> <span class="nx">Book</span><span class="p">):</span> <span class="k">void</span> <span class="p">{</span>
+      <span class="nf">patchState</span><span class="p">(</span><span class="nx">store</span><span class="p">,</span> <span class="nf">addEntity</span><span class="p">(</span><span class="nx">book</span><span class="p">,</span> <span class="p">{</span> <span class="na">collection</span><span class="p">:</span> <span class="dl">'</span><span class="s1">book</span><span class="dl">'</span> <span class="p">}));</span>
+    <span class="p">},</span>
+    <span class="nf">addAuthor</span><span class="p">(</span><span class="na">author</span><span class="p">:</span> <span class="nx">Author</span><span class="p">):</span> <span class="k">void</span> <span class="p">{</span>
+      <span class="nf">patchState</span><span class="p">(</span><span class="nx">store</span><span class="p">,</span> <span class="nf">addEntity</span><span class="p">(</span><span class="nx">author</span><span class="p">,</span> <span class="p">{</span> <span class="na">collection</span><span class="p">:</span> <span class="dl">'</span><span class="s1">author</span><span class="dl">'</span> <span class="p">}));</span>
+    <span class="p">},</span>
+  <span class="p">}))</span>
+<span class="p">);</span>
+</code></pre></div></div> <p>This approach allows you to maintain multiple collections within a single store while keeping their states isolated and manageable.</p>]]></content><author><name></name></author><category term="angular"/><category term="angular,"/><category term="ngrx,"/><category term="state"/><summary type="html"><![CDATA[Learn how to efficiently manage entity collections in Angular using NgRx SignalStore.]]></summary></entry><entry><title type="html">Understanding Structs in Go: A Beginner’s Guide</title><link href="https://varedisy.github.io/blog/2024/structs-golang/" rel="alternate" type="text/html" title="Understanding Structs in Go: A Beginner’s Guide"/><published>2024-08-27T12:00:00+00:00</published><updated>2024-08-27T12:00:00+00:00</updated><id>https://varedisy.github.io/blog/2024/structs-golang</id><content type="html" xml:base="https://varedisy.github.io/blog/2024/structs-golang/"><![CDATA[<h2 id="what-is-a-struct">What is a Struct?</h2> <p>In Go, a struct is a composite data type that groups together variables under a single name. These variables, known as <strong>fields</strong>, can have different types and are used to represent data more complex than a single primitive type. Structs are the closest thing Go has to classes in object-oriented languages.</p> <p>Structs provide a way to create more complex data structures that mirror real-world entities. For example, if you were writing an application to manage a library, you could define a struct to represent a book, with fields for the title, author, and publication year.</p> <h2 id="defining-a-struct">Defining a Struct</h2> <p>To define a struct in Go, use the <code class="language-plaintext highlighter-rouge">type</code> keyword followed by the name of the struct and the <code class="language-plaintext highlighter-rouge">struct</code> keyword. Inside the curly braces <code class="language-plaintext highlighter-rouge">{}</code>, list the fields along with their types. Here’s an example:</p> <div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="s">"fmt"</span>
+
+<span class="c">// Defining a struct named Book</span>
+<span class="k">type</span> <span class="n">Book</span> <span class="k">struct</span> <span class="p">{</span>
+    <span class="n">Title</span>  <span class="kt">string</span>
+    <span class="n">Author</span> <span class="kt">string</span>
+    <span class="n">Pages</span>  <span class="kt">int</span>
+<span class="p">}</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c">// Using the struct in the main function</span>
+    <span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"Structs in Go"</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div></div> <p>In this example, <code class="language-plaintext highlighter-rouge">Book</code> is a struct with three fields: <code class="language-plaintext highlighter-rouge">Title</code> (a string), <code class="language-plaintext highlighter-rouge">Author</code> (a string), and <code class="language-plaintext highlighter-rouge">Pages</code> (an integer).</p> <h2 id="initializing-structs">Initializing Structs</h2> <p>Once you have defined a struct, you can create instances of it in several ways.</p> <h3 id="using-a-literal">Using a Literal</h3> <p>You can create and initialize a struct in a single step using a struct literal:</p> <div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="s">"fmt"</span>
+
+<span class="k">type</span> <span class="n">Book</span> <span class="k">struct</span> <span class="p">{</span>
+    <span class="n">Title</span>  <span class="kt">string</span>
+    <span class="n">Author</span> <span class="kt">string</span>
+    <span class="n">Pages</span>  <span class="kt">int</span>
+<span class="p">}</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c">// Initializing a struct using a literal</span>
+    <span class="n">myBook</span> <span class="o">:=</span> <span class="n">Book</span><span class="p">{</span>
+        <span class="n">Title</span><span class="o">:</span>  <span class="s">"The Go Programming Language"</span><span class="p">,</span>
+        <span class="n">Author</span><span class="o">:</span> <span class="s">"Alan Donovan"</span><span class="p">,</span>
+        <span class="n">Pages</span><span class="o">:</span>  <span class="m">380</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">myBook</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div></div> <p>This creates a <code class="language-plaintext highlighter-rouge">Book</code> instance called <code class="language-plaintext highlighter-rouge">myBook</code> with the specified values.</p> <h3 id="using-the-new-keyword">Using the <code class="language-plaintext highlighter-rouge">new</code> Keyword</h3> <p>Alternatively, you can create a pointer to a struct using the <code class="language-plaintext highlighter-rouge">new</code> keyword:</p> <div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="s">"fmt"</span>
+
+<span class="k">type</span> <span class="n">Book</span> <span class="k">struct</span> <span class="p">{</span>
+    <span class="n">Title</span>  <span class="kt">string</span>
+    <span class="n">Author</span> <span class="kt">string</span>
+    <span class="n">Pages</span>  <span class="kt">int</span>
+<span class="p">}</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c">// Creating a pointer to a struct</span>
+    <span class="n">myBook</span> <span class="o">:=</span> <span class="nb">new</span><span class="p">(</span><span class="n">Book</span><span class="p">)</span>
+    <span class="n">myBook</span><span class="o">.</span><span class="n">Title</span> <span class="o">=</span> <span class="s">"The Go Programming Language"</span>
+    <span class="n">myBook</span><span class="o">.</span><span class="n">Author</span> <span class="o">=</span> <span class="s">"Alan Donovan"</span>
+    <span class="n">myBook</span><span class="o">.</span><span class="n">Pages</span> <span class="o">=</span> <span class="m">380</span>
+
+    <span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="o">*</span><span class="n">myBook</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div></div> <p>This approach is useful when you want to work with pointers.</p> <h2 id="accessing-and-modifying-struct-fields">Accessing and Modifying Struct Fields</h2> <p>Once you have a struct instance, you can access and modify its fields using the dot <code class="language-plaintext highlighter-rouge">.</code> notation:</p> <div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="s">"fmt"</span>
+
+<span class="k">type</span> <span class="n">Book</span> <span class="k">struct</span> <span class="p">{</span>
+    <span class="n">Title</span>  <span class="kt">string</span>
+    <span class="n">Author</span> <span class="kt">string</span>
+    <span class="n">Pages</span>  <span class="kt">int</span>
+<span class="p">}</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">myBook</span> <span class="o">:=</span> <span class="n">Book</span><span class="p">{</span>
+        <span class="n">Title</span><span class="o">:</span>  <span class="s">"The Go Programming Language"</span><span class="p">,</span>
+        <span class="n">Author</span><span class="o">:</span> <span class="s">"Alan Donovan"</span><span class="p">,</span>
+        <span class="n">Pages</span><span class="o">:</span>  <span class="m">380</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="c">// Accessing fields</span>
+    <span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"Title:"</span><span class="p">,</span> <span class="n">myBook</span><span class="o">.</span><span class="n">Title</span><span class="p">)</span>
+    <span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"Author:"</span><span class="p">,</span> <span class="n">myBook</span><span class="o">.</span><span class="n">Author</span><span class="p">)</span>
+    <span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"Pages:"</span><span class="p">,</span> <span class="n">myBook</span><span class="o">.</span><span class="n">Pages</span><span class="p">)</span>
+
+    <span class="c">// Modifying fields</span>
+    <span class="n">myBook</span><span class="o">.</span><span class="n">Pages</span> <span class="o">=</span> <span class="m">400</span>
+    <span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"Updated Pages:"</span><span class="p">,</span> <span class="n">myBook</span><span class="o">.</span><span class="n">Pages</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div></div> <p>Here, the <code class="language-plaintext highlighter-rouge">Title</code>, <code class="language-plaintext highlighter-rouge">Author</code>, and <code class="language-plaintext highlighter-rouge">Pages</code> fields of the <code class="language-plaintext highlighter-rouge">myBook</code> instance are accessed and modified.</p> <h2 id="embedding-and-inheritance-with-structs">Embedding and Inheritance with Structs</h2> <p>Go doesn’t have traditional inheritance like some other languages, but it does allow for composition through struct embedding. You can embed one struct within another, allowing the embedded struct’s fields and methods to be accessed directly from the outer struct.</p> <div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="s">"fmt"</span>
+
+<span class="c">// Define a basic struct</span>
+<span class="k">type</span> <span class="n">Person</span> <span class="k">struct</span> <span class="p">{</span>
+    <span class="n">Name</span> <span class="kt">string</span>
+    <span class="n">Age</span>  <span class="kt">int</span>
+<span class="p">}</span>
+
+<span class="c">// Embedding Person struct in Author struct</span>
+<span class="k">type</span> <span class="n">Author</span> <span class="k">struct</span> <span class="p">{</span>
+    <span class="n">Person</span>
+    <span class="n">BooksPublished</span> <span class="kt">int</span>
+<span class="p">}</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">author</span> <span class="o">:=</span> <span class="n">Author</span><span class="p">{</span>
+        <span class="n">Person</span><span class="o">:</span> <span class="n">Person</span><span class="p">{</span>
+            <span class="n">Name</span><span class="o">:</span> <span class="s">"Alan Donovan"</span><span class="p">,</span>
+            <span class="n">Age</span><span class="o">:</span>  <span class="m">45</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="n">BooksPublished</span><span class="o">:</span> <span class="m">5</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="c">// Accessing embedded struct's fields</span>
+    <span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"Author Name:"</span><span class="p">,</span> <span class="n">author</span><span class="o">.</span><span class="n">Name</span><span class="p">)</span>
+    <span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"Author Age:"</span><span class="p">,</span> <span class="n">author</span><span class="o">.</span><span class="n">Age</span><span class="p">)</span>
+    <span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"Books Published:"</span><span class="p">,</span> <span class="n">author</span><span class="o">.</span><span class="n">BooksPublished</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div></div> <p>In this example, the <code class="language-plaintext highlighter-rouge">Author</code> struct embeds the <code class="language-plaintext highlighter-rouge">Person</code> struct, and you can access the <code class="language-plaintext highlighter-rouge">Name</code> and <code class="language-plaintext highlighter-rouge">Age</code> fields directly on an <code class="language-plaintext highlighter-rouge">Author</code> instance.</p> <p>Here’s the final section of the article focused on methods, including passing by value and by reference:</p> <h2 id="methods-on-structs-pass-by-value-vs-pass-by-reference">Methods on Structs: Pass by Value vs. Pass by Reference</h2> <p>In Go, you can define methods on structs to associate behaviors with the data they encapsulate. These methods can either receive a copy of the struct (pass by value) or a reference to the struct (pass by reference). Understanding the difference between these two approaches is essential for writing efficient and bug-free Go code.</p> <h3 id="pass-by-value">Pass by Value</h3> <p>When a method is defined with a value receiver, the method operates on a copy of the struct. Any modifications made within the method do not affect the original struct.</p> <div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="s">"fmt"</span>
+
+<span class="k">type</span> <span class="n">Rectangle</span> <span class="k">struct</span> <span class="p">{</span>
+    <span class="n">Width</span>  <span class="kt">int</span>
+    <span class="n">Height</span> <span class="kt">int</span>
+<span class="p">}</span>
+
+<span class="c">// Method with a value receiver</span>
+<span class="k">func</span> <span class="p">(</span><span class="n">r</span> <span class="n">Rectangle</span><span class="p">)</span> <span class="n">Area</span><span class="p">()</span> <span class="kt">int</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">r</span><span class="o">.</span><span class="n">Width</span> <span class="o">*</span> <span class="n">r</span><span class="o">.</span><span class="n">Height</span>
+<span class="p">}</span>
+
+<span class="k">func</span> <span class="p">(</span><span class="n">r</span> <span class="n">Rectangle</span><span class="p">)</span> <span class="n">Scale</span><span class="p">(</span><span class="n">factor</span> <span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">r</span><span class="o">.</span><span class="n">Width</span> <span class="o">*=</span> <span class="n">factor</span>
+    <span class="n">r</span><span class="o">.</span><span class="n">Height</span> <span class="o">*=</span> <span class="n">factor</span>
+<span class="p">}</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">rect</span> <span class="o">:=</span> <span class="n">Rectangle</span><span class="p">{</span><span class="n">Width</span><span class="o">:</span> <span class="m">10</span><span class="p">,</span> <span class="n">Height</span><span class="o">:</span> <span class="m">5</span><span class="p">}</span>
+    <span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"Area:"</span><span class="p">,</span> <span class="n">rect</span><span class="o">.</span><span class="n">Area</span><span class="p">())</span> <span class="c">// Outputs: Area: 50</span>
+
+    <span class="n">rect</span><span class="o">.</span><span class="n">Scale</span><span class="p">(</span><span class="m">2</span><span class="p">)</span>
+    <span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"Scaled Width:"</span><span class="p">,</span> <span class="n">rect</span><span class="o">.</span><span class="n">Width</span><span class="p">)</span>  <span class="c">// Outputs: Scaled Width: 10</span>
+    <span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"Scaled Height:"</span><span class="p">,</span> <span class="n">rect</span><span class="o">.</span><span class="n">Height</span><span class="p">)</span> <span class="c">// Outputs: Scaled Height: 5</span>
+<span class="p">}</span>
+</code></pre></div></div> <p>In this example, calling <code class="language-plaintext highlighter-rouge">rect.Scale(2)</code> does not change the <code class="language-plaintext highlighter-rouge">Width</code> or <code class="language-plaintext highlighter-rouge">Height</code> of <code class="language-plaintext highlighter-rouge">rect</code> because the method operates on a copy of the struct. The original struct remains unchanged.</p> <h3 id="pass-by-reference">Pass by Reference</h3> <p>To modify the original struct within a method, you can use a pointer receiver. This approach allows the method to operate directly on the struct’s memory address, enabling it to make changes that persist outside the method scope.</p> <div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">package</span> <span class="n">main</span>
+
+<span class="k">import</span> <span class="s">"fmt"</span>
+
+<span class="k">type</span> <span class="n">Rectangle</span> <span class="k">struct</span> <span class="p">{</span>
+    <span class="n">Width</span>  <span class="kt">int</span>
+    <span class="n">Height</span> <span class="kt">int</span>
+<span class="p">}</span>
+
+<span class="c">// Method with a pointer receiver</span>
+<span class="k">func</span> <span class="p">(</span><span class="n">r</span> <span class="o">*</span><span class="n">Rectangle</span><span class="p">)</span> <span class="n">Scale</span><span class="p">(</span><span class="n">factor</span> <span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">r</span><span class="o">.</span><span class="n">Width</span> <span class="o">*=</span> <span class="n">factor</span>
+    <span class="n">r</span><span class="o">.</span><span class="n">Height</span> <span class="o">*=</span> <span class="n">factor</span>
+<span class="p">}</span>
+
+<span class="k">func</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">rect</span> <span class="o">:=</span> <span class="n">Rectangle</span><span class="p">{</span><span class="n">Width</span><span class="o">:</span> <span class="m">10</span><span class="p">,</span> <span class="n">Height</span><span class="o">:</span> <span class="m">5</span><span class="p">}</span>
+    <span class="n">rect</span><span class="o">.</span><span class="n">Scale</span><span class="p">(</span><span class="m">2</span><span class="p">)</span>
+    <span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"Scaled Width:"</span><span class="p">,</span> <span class="n">rect</span><span class="o">.</span><span class="n">Width</span><span class="p">)</span>  <span class="c">// Outputs: Scaled Width: 20</span>
+    <span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s">"Scaled Height:"</span><span class="p">,</span> <span class="n">rect</span><span class="o">.</span><span class="n">Height</span><span class="p">)</span> <span class="c">// Outputs: Scaled Height: 10</span>
+<span class="p">}</span>
+</code></pre></div></div> <p>Here, <code class="language-plaintext highlighter-rouge">Scale</code> is defined with a pointer receiver <code class="language-plaintext highlighter-rouge">*Rectangle</code>, allowing it to modify the original <code class="language-plaintext highlighter-rouge">rect</code> struct. After scaling, the <code class="language-plaintext highlighter-rouge">Width</code> and <code class="language-plaintext highlighter-rouge">Height</code> values are updated as expected.</p> <h3 id="choosing-between-pass-by-value-and-pass-by-reference">Choosing Between Pass by Value and Pass by Reference</h3> <ul> <li> <p><strong>Pass by Value</strong>: Use this when the method does not need to modify the original struct. It can be more efficient when working with small structs, as copying a small amount of data is generally inexpensive.</p> </li> <li> <p><strong>Pass by Reference</strong>: Use this when the method needs to alter the struct’s data. It is more efficient for larger structs because it avoids copying the entire struct, which can be costly in terms of performance.</p> </li> </ul> <p>Understanding when to use each approach allows you to write clearer, more efficient Go code that behaves as intended.</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+
+## Conclusion
+
+Structs are a fundamental part of Go's type system and are essential for creating more complex and meaningful data structures. By understanding how to define, initialize, and manipulate structs, as well as how to use methods and embedding, you can write more organized and maintainable Go code.
+
+Start experimenting with structs in your projects, and you'll see how they can help you manage and structure your data more effectively.
+</code></pre></div></div>]]></content><author><name></name></author><category term="golang"/><category term="golang,"/><category term="structs"/><summary type="html"><![CDATA[Learn the basics of structs in Go and how to use them effectively in your programs.]]></summary></entry><entry><title type="html">Getting Started with NgRx SignalStore</title><link href="https://varedisy.github.io/blog/2024/ngrx-store-angular/" rel="alternate" type="text/html" title="Getting Started with NgRx SignalStore"/><published>2024-08-22T12:00:00+00:00</published><updated>2024-08-22T12:00:00+00:00</updated><id>https://varedisy.github.io/blog/2024/ngrx-store-angular</id><content type="html" xml:base="https://varedisy.github.io/blog/2024/ngrx-store-angular/"><![CDATA[<h2 id="introduction">Introduction</h2> <p>NgRx SignalStore is a powerful state management solution for Angular applications. It leverages Signals to create stores in a clear, declarative manner, providing flexibility and ease of use.</p> <p>In this guide, we’ll explore how to create and use SignalStores, manage state and define computed signals and methods.</p> <h2 id="prerequisites">Prerequisites</h2> <ul> <li> <p><strong>Install NgRx Signals:</strong></p> <p>Run the following command to install the core NgRx signals libraries:</p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ng add @ngrx/signals@latest
 </code></pre></div> </div> </li> </ul> <h2 id="creating-a-store">Creating a Store</h2> <p>A SignalStore is created using the <code class="language-plaintext highlighter-rouge">signalStore</code> function, which takes a series of store features as arguments. This allows the SignalStore to manage state, computed signals, and methods, making the implementation flexible and extensible. Depending on the features used, <code class="language-plaintext highlighter-rouge">signalStore</code> returns an injectable service that can be provided and injected wherever needed.</p> <p>To add state slices to a SignalStore, use the <code class="language-plaintext highlighter-rouge">withState</code> feature. This feature accepts the initial state, which must be an object literal.</p> <p>Here’s an example:</p> <div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
 
 <span class="k">import</span> <span class="p">{</span> <span class="nx">signalStore</span><span class="p">,</span> <span class="nx">withState</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@ngrx/signals</span><span class="dl">'</span><span class="p">;</span>
@@ -132,7 +402,7 @@
 <span class="p">);</span>
 
 
-</code></pre></div></div> <hr/> <p>This comprehensive setup makes the <code class="language-plaintext highlighter-rouge">BooksStore</code> a powerful tool for managing application state in Angular, with the added benefit of seamless integration with RxJS for handling more complex, asynchronous tasks.</p>]]></content><author><name></name></author><category term="angular"/><category term="angular,"/><category term="ngrx,"/><category term="state"/><summary type="html"><![CDATA[Explore how NgRx SignalStore simplifies state management in Angular with its native support for Signals, and learn how to create, provide, and use SignalStores effectively.]]></summary></entry><entry><title type="html">Understanding For Loops in Go</title><link href="https://varedisy.github.io/blog/2024/for-loops-golang/" rel="alternate" type="text/html" title="Understanding For Loops in Go"/><published>2024-08-22T10:00:00+00:00</published><updated>2024-08-22T10:00:00+00:00</updated><id>https://varedisy.github.io/blog/2024/for-loops-golang</id><content type="html" xml:base="https://varedisy.github.io/blog/2024/for-loops-golang/"><![CDATA[<h2 id="introduction">Introduction</h2> <p>Go (or Golang) is a statically typed, compiled programming language known for its simplicity and efficiency. One of the fundamental control structures in Go is the <code class="language-plaintext highlighter-rouge">for</code> loop. Unlike many other languages that have different types of loops, Go uses a single <code class="language-plaintext highlighter-rouge">for</code> loop construct that can be adapted to various looping needs.</p> <p>Here’s a detailed overview of how to use <code class="language-plaintext highlighter-rouge">for</code> loops in Go, with examples.</p> <h2 id="basic-for-loop">Basic For Loop</h2> <p>The most basic form of the <code class="language-plaintext highlighter-rouge">for</code> loop in Go is the classic initialization, condition, and post statement loop. Here’s a simple example that prints numbers from 1 to 5:</p> <div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">package</span> <span class="n">main</span>
+</code></pre></div></div> <h2 id="managing-entities">Managing Entities</h2> <p>To learn how to manage entities in the ngrx signal store, check out our <a href="https://varedisy.github.io/blog/2024/ngrx-store-entities-angular/">Entity Management with NgRx SignalStore: Streamlining State Management in Angular</a>.</p> <hr/> <p>This comprehensive setup makes the <code class="language-plaintext highlighter-rouge">BooksStore</code> a powerful tool for managing application state in Angular, with the added benefit of seamless integration with RxJS for handling more complex, asynchronous tasks.</p>]]></content><author><name></name></author><category term="angular"/><category term="angular,"/><category term="ngrx,"/><category term="state"/><summary type="html"><![CDATA[Explore how NgRx SignalStore simplifies state management in Angular with its native support for Signals, and learn how to create, provide, and use SignalStores effectively.]]></summary></entry><entry><title type="html">Understanding For Loops in Go</title><link href="https://varedisy.github.io/blog/2024/for-loops-golang/" rel="alternate" type="text/html" title="Understanding For Loops in Go"/><published>2024-08-22T10:00:00+00:00</published><updated>2024-08-22T10:00:00+00:00</updated><id>https://varedisy.github.io/blog/2024/for-loops-golang</id><content type="html" xml:base="https://varedisy.github.io/blog/2024/for-loops-golang/"><![CDATA[<h2 id="introduction">Introduction</h2> <p>Go (or Golang) is a statically typed, compiled programming language known for its simplicity and efficiency. One of the fundamental control structures in Go is the <code class="language-plaintext highlighter-rouge">for</code> loop. Unlike many other languages that have different types of loops, Go uses a single <code class="language-plaintext highlighter-rouge">for</code> loop construct that can be adapted to various looping needs.</p> <p>Here’s a detailed overview of how to use <code class="language-plaintext highlighter-rouge">for</code> loops in Go, with examples.</p> <h2 id="basic-for-loop">Basic For Loop</h2> <p>The most basic form of the <code class="language-plaintext highlighter-rouge">for</code> loop in Go is the classic initialization, condition, and post statement loop. Here’s a simple example that prints numbers from 1 to 5:</p> <div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">package</span> <span class="n">main</span>
 
 <span class="k">import</span> <span class="s">"fmt"</span>
 
@@ -184,4 +454,4 @@
         <span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">()</span>
     <span class="p">}</span>
 <span class="p">}</span>
-</code></pre></div></div> <p>In this example, the outer loop iterates through rows and the inner loop iterates through columns, printing a multiplication table.</p> <h2 id="summary">Summary</h2> <p>The <code class="language-plaintext highlighter-rouge">for</code> loop in Go is versatile and can be used in various ways to achieve different looping constructs. Whether you need a basic iteration, a <code class="language-plaintext highlighter-rouge">while</code>-like loop, or an infinite loop, Go’s <code class="language-plaintext highlighter-rouge">for</code> loop can handle it all. It also seamlessly integrates with Go’s <code class="language-plaintext highlighter-rouge">range</code> keyword for iterating over collections.</p> <p>Experiment with these different forms of <code class="language-plaintext highlighter-rouge">for</code> loops to understand their usage and see how they fit into your Go programs. Happy coding!</p> <hr/> <p>For more information on Go loops and other Go features, check out the <a href="https://golang.org/doc/effective_go#for">official Go documentation</a>.</p>]]></content><author><name></name></author><category term="programming-tutorials"/><category term="golang"/><category term="loops"/><summary type="html"><![CDATA[An in-depth look at how to use for loops in the Go programming language]]></summary></entry></feed>
+</code></pre></div></div> <p>In this example, the outer loop iterates through rows and the inner loop iterates through columns, printing a multiplication table.</p> <h2 id="summary">Summary</h2> <p>The <code class="language-plaintext highlighter-rouge">for</code> loop in Go is versatile and can be used in various ways to achieve different looping constructs. Whether you need a basic iteration, a <code class="language-plaintext highlighter-rouge">while</code>-like loop, or an infinite loop, Go’s <code class="language-plaintext highlighter-rouge">for</code> loop can handle it all. It also seamlessly integrates with Go’s <code class="language-plaintext highlighter-rouge">range</code> keyword for iterating over collections.</p> <p>Experiment with these different forms of <code class="language-plaintext highlighter-rouge">for</code> loops to understand their usage and see how they fit into your Go programs. Happy coding!</p> <hr/> <p>For more information on Go loops and other Go features, check out the <a href="https://golang.org/doc/effective_go#for">official Go documentation</a>.</p>]]></content><author><name></name></author><category term="golang"/><category term="loops"/><summary type="html"><![CDATA[An in-depth look at how to use for loops in the Go programming language]]></summary></entry></feed>
