@@ -1,6 +1,6 @@
 ---
 layout: distill
-title: Comprehensive Guide to NgRx SignalStore for State Management in Angular
+title: Getting Started with NgRx SignalStore
 date: 2024-08-22 12:00:00
 description: Explore how NgRx SignalStore simplifies state management in Angular with its native support for Signals, and learn how to create, provide, and use SignalStores effectively.
 tags: angular, ngrx, state
@@ -15,25 +15,26 @@ toc:
   - name: Defining Computed Signals
   - name: Defining Store Methods
   - name: Putting It All Together
+  - name: Managing Entities
 ---
 
 ## Introduction
 
-NgRx SignalStore is a powerful state management solution for Angular applications. It leverages Signals to create stores in a clear, declarative manner, providing flexibility and ease of use. SignalStore’s opinionated and extensible design makes it an excellent choice for managing both local and global state in Angular applications.
+NgRx SignalStore is a powerful state management solution for Angular applications. It leverages Signals to create stores in a clear, declarative manner, providing flexibility and ease of use.
 
-In this guide, we'll explore how to create and use SignalStores, manage state, define computed signals and methods, and integrate with RxJS for reactive programming.
+In this guide, we'll explore how to create and use SignalStores, manage state and define computed signals and methods.
 
 
 ## Prerequisites
 
 
 
-   - **Install NgRx Store and Effects:**
+   - **Install NgRx Signals:**
 
-     Run the following command to install the core NgRx libraries:
+     Run the following command to install the core NgRx signals libraries:
 
      ```bash
-     ng add @ngrx/store @ngrx/effects @ngrx/entity 
+     ng add @ngrx/signals@latest
      ```
 
  
@@ -230,6 +231,9 @@ export const BooksStore = signalStore(
 {% endraw %}
 
 ```
+
+## Managing Entities
+To learn how to manage entities in the ngrx signal store, check out our [Entity Management with NgRx SignalStore: Streamlining State Management in Angular](https://varedisy.github.io/blog/2024/ngrx-store-entities-angular/).
 
 ---
 

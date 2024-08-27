@@ -4,7 +4,6 @@ title: Understanding For Loops in Go
 date: 2024-08-22 10:00:00
 description: An in-depth look at how to use for loops in the Go programming language
 tags: golang loops
-categories: programming-tutorials
 featured: false
 toc:
   - name: Introduction
