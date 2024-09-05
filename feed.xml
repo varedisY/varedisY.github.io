@@ -1,4 +1,213 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en"><generator uri="https://jekyllrb.com/" version="4.3.3">Jekyll</generator><link href="https://varedisy.github.io/feed.xml" rel="self" type="application/atom+xml"/><link href="https://varedisy.github.io/" rel="alternate" type="text/html" hreflang="en"/><updated>2024-08-27T17:34:08+00:00</updated><id>https://varedisy.github.io/feed.xml</id><title type="html">not_on_stack</title><entry><title type="html">Entity Management with NgRx SignalStore: Streamlining State Management in Angular</title><link href="https://varedisy.github.io/blog/2024/ngrx-store-entities-angular/" rel="alternate" type="text/html" title="Entity Management with NgRx SignalStore: Streamlining State Management in Angular"/><published>2024-08-27T12:00:00+00:00</published><updated>2024-08-27T12:00:00+00:00</updated><id>https://varedisy.github.io/blog/2024/ngrx-store-entities-angular</id><content type="html" xml:base="https://varedisy.github.io/blog/2024/ngrx-store-entities-angular/"><![CDATA[<h2 id="introduction-to-entity-management">Introduction to Entity Management</h2> <p>Managing entities efficiently is a crucial aspect of state management in any application. NgRx SignalStore offers an elegant solution for handling entity collections through the <code class="language-plaintext highlighter-rouge">@ngrx/signals/entities</code> plugin. This plugin simplifies the management of entities, allowing you to focus on the logic and features of your Angular application without getting bogged down by the intricacies of state management.</p> <p>If you have never used NgRx SignalStore before, refer to the article <a href="https://varedisy.github.io/blog/2024/ngrx-store-angular/">Getting Started with NgRx SignalStore</a>.</p> <h2 id="using-withentities-feature">Using <code class="language-plaintext highlighter-rouge">withEntities</code> Feature</h2> <p>The <code class="language-plaintext highlighter-rouge">withEntities</code> feature is the cornerstone of entity management in SignalStore. It automatically generates signals that provide access to entity collections, including:</p> <ul> <li><strong>ids</strong>: A signal that returns an array of all entity IDs.</li> <li><strong>entityMap</strong>: A signal that returns a map of entities keyed by their IDs.</li> <li><strong>entities</strong>: A signal that returns an array of all entities, making it easy to work with the entire collection.</li> </ul> <p>Here’s an example of how to define a basic SignalStore with entity management:</p> <div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">computed</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@angular/core</span><span class="dl">'</span><span class="p">;</span>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en"><generator uri="https://jekyllrb.com/" version="4.3.3">Jekyll</generator><link href="https://varedisy.github.io/feed.xml" rel="self" type="application/atom+xml"/><link href="https://varedisy.github.io/" rel="alternate" type="text/html" hreflang="en"/><updated>2024-09-05T09:57:07+00:00</updated><id>https://varedisy.github.io/feed.xml</id><title type="html">not_on_stack</title><entry><title type="html">Integrating Riverpod with Firebase Authentication in Flutter</title><link href="https://varedisy.github.io/blog/2024/riverpod-firebase-auth/" rel="alternate" type="text/html" title="Integrating Riverpod with Firebase Authentication in Flutter"/><published>2024-09-04T12:00:00+00:00</published><updated>2024-09-04T12:00:00+00:00</updated><id>https://varedisy.github.io/blog/2024/riverpod-firebase-auth</id><content type="html" xml:base="https://varedisy.github.io/blog/2024/riverpod-firebase-auth/"><![CDATA[<h2 id="introduction">Introduction</h2> <p>Firebase Authentication is a powerful tool for managing user sign-ins in a Flutter app. This guide demonstrates how to integrate Firebase Authentication with Riverpod, leveraging the <code class="language-plaintext highlighter-rouge">StreamNotifier</code> API for managing authentication state in a structured and reactive way.</p> <p>This article assumes that you already have Firebase installed and configured in your Flutter project, and you have a basic understanding of Riverpod and its provider system.</p> <h2 id="setting-up-firebaseauth-provider">Setting up FirebaseAuth Provider</h2> <p>First, we need a Riverpod provider to expose the <code class="language-plaintext highlighter-rouge">FirebaseAuth</code> instance to the app. This instance will be used to access the authentication features provided by Firebase.</p> <div class="language-dart highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="s">'package:firebase_auth/firebase_auth.dart'</span><span class="o">;</span>
+<span class="kn">import</span> <span class="s">'package:riverpod_annotation/riverpod_annotation.dart'</span><span class="o">;</span>
+
+<span class="kn">part</span> <span class="s">'auth_provider.g.dart'</span><span class="o">;</span>
+
+<span class="nd">@riverpod</span>
+<span class="n">FirebaseAuth</span> <span class="nf">firebaseAuth</span><span class="p">(</span><span class="n">FirebaseAuthRef</span> <span class="n">ref</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="n">FirebaseAuth</span><span class="o">.</span><span class="na">instance</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div> <p>This <code class="language-plaintext highlighter-rouge">firebaseAuthProvider</code> makes the <code class="language-plaintext highlighter-rouge">FirebaseAuth</code> instance available to the rest of the app.</p> <h2 id="managing-authentication-state">Managing Authentication State</h2> <p>We’ll now manage the user’s authentication state. <code class="language-plaintext highlighter-rouge">FirebaseAuth</code> provides a stream that notifies us when the authentication state changes. We can wrap this stream in a <code class="language-plaintext highlighter-rouge">StreamNotifier</code> to update the state reactively within our app.</p> <div class="language-dart highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="s">'package:firebase_auth/firebase_auth.dart'</span><span class="o">;</span>
+<span class="kn">import</span> <span class="s">'package:riverpod_annotation/riverpod_annotation.dart'</span><span class="o">;</span>
+
+<span class="kn">part</span> <span class="s">'auth_state_provider.g.dart'</span><span class="o">;</span>
+
+<span class="nd">@riverpod</span>
+<span class="kd">class</span> <span class="nc">AuthNotifier</span> <span class="kd">extends</span> <span class="n">_$AuthNotifier</span> <span class="p">{</span>
+
+  <span class="nd">@override</span>
+  <span class="n">Stream</span><span class="p">&lt;</span><span class="n">User</span><span class="o">?</span><span class="p">&gt;</span> <span class="n">build</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">final</span> <span class="n">firebaseAuth</span> <span class="o">=</span> <span class="n">ref</span><span class="o">.</span><span class="na">watch</span><span class="p">(</span><span class="n">firebaseAuthProvider</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">firebaseAuth</span><span class="o">.</span><span class="na">authStateChanges</span><span class="p">();</span>
+  <span class="p">}</span>
+
+  <span class="n">Future</span><span class="p">&lt;</span><span class="kt">void</span><span class="p">&gt;</span> <span class="n">signIn</span><span class="p">(</span><span class="kt">String</span> <span class="n">email</span><span class="p">,</span> <span class="kt">String</span> <span class="n">password</span><span class="p">)</span> <span class="kd">async</span> <span class="p">{</span>
+    <span class="kd">final</span> <span class="n">firebaseAuth</span> <span class="o">=</span> <span class="n">ref</span><span class="o">.</span><span class="na">read</span><span class="p">(</span><span class="n">firebaseAuthProvider</span><span class="p">);</span>
+    <span class="k">await</span> <span class="n">firebaseAuth</span><span class="o">.</span><span class="na">signInWithEmailAndPassword</span><span class="p">(</span><span class="nl">email:</span> <span class="n">email</span><span class="p">,</span> <span class="nl">password:</span> <span class="n">password</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="n">Future</span><span class="p">&lt;</span><span class="kt">void</span><span class="p">&gt;</span> <span class="n">signOut</span><span class="p">()</span> <span class="kd">async</span> <span class="p">{</span>
+    <span class="kd">final</span> <span class="n">firebaseAuth</span> <span class="o">=</span> <span class="n">ref</span><span class="o">.</span><span class="na">read</span><span class="p">(</span><span class="n">firebaseAuthProvider</span><span class="p">);</span>
+    <span class="k">await</span> <span class="n">firebaseAuth</span><span class="o">.</span><span class="na">signOut</span><span class="p">();</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div> <p>The <code class="language-plaintext highlighter-rouge">AuthNotifier</code> here automatically updates the state when Firebase authentication events occur. It also provides <code class="language-plaintext highlighter-rouge">signIn</code> and <code class="language-plaintext highlighter-rouge">signOut</code> methods that allow users to authenticate via Firebase.</p> <p>Now that we have a reactive provider that updates the authentication state automatically, we can use it in the UI.</p> <h2 id="signing-in-and-out">Signing In and Out</h2> <p>Let’s now use our <code class="language-plaintext highlighter-rouge">AuthNotifier</code> to sign in and out. We will build a sign-in page where the user can input their credentials and trigger the <code class="language-plaintext highlighter-rouge">signIn</code> method. Similarly, we can add a button to sign out.</p> <div class="language-dart highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="s">'package:flutter/material.dart'</span><span class="o">;</span>
+<span class="kn">import</span> <span class="s">'package:flutter_riverpod/flutter_riverpod.dart'</span><span class="o">;</span>
+
+<span class="kd">class</span> <span class="nc">SignInPage</span> <span class="kd">extends</span> <span class="n">ConsumerWidget</span> <span class="p">{</span>
+  <span class="nd">@override</span>
+  <span class="n">Widget</span> <span class="n">build</span><span class="p">(</span><span class="n">BuildContext</span> <span class="n">context</span><span class="p">,</span> <span class="n">WidgetRef</span> <span class="n">ref</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">final</span> <span class="n">authNotifier</span> <span class="o">=</span> <span class="n">ref</span><span class="o">.</span><span class="na">read</span><span class="p">(</span><span class="n">authNotifierProvider</span><span class="o">.</span><span class="na">notifier</span><span class="p">);</span>
+    <span class="kd">final</span> <span class="n">authState</span> <span class="o">=</span> <span class="n">ref</span><span class="o">.</span><span class="na">watch</span><span class="p">(</span><span class="n">authNotifierProvider</span><span class="p">);</span>
+
+    <span class="k">return</span> <span class="n">Scaffold</span><span class="p">(</span>
+      <span class="nl">appBar:</span> <span class="n">AppBar</span><span class="p">(</span><span class="nl">title:</span> <span class="n">Text</span><span class="p">(</span><span class="s">'Sign In'</span><span class="p">)),</span>
+      <span class="nl">body:</span> <span class="n">Padding</span><span class="p">(</span>
+        <span class="nl">padding:</span> <span class="kd">const</span> <span class="n">EdgeInsets</span><span class="o">.</span><span class="na">all</span><span class="p">(</span><span class="mf">16.0</span><span class="p">),</span>
+        <span class="nl">child:</span> <span class="n">Column</span><span class="p">(</span>
+          <span class="nl">children:</span> <span class="p">[</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">authState</span><span class="o">.</span><span class="na">value</span> <span class="o">!=</span> <span class="kc">null</span><span class="p">)</span> <span class="p">...[</span>
+              <span class="n">Text</span><span class="p">(</span><span class="s">'Logged in as: </span><span class="si">${authState.value?.email}</span><span class="s">'</span><span class="p">),</span>
+              <span class="n">ElevatedButton</span><span class="p">(</span>
+                <span class="nl">onPressed:</span> <span class="p">()</span> <span class="kd">async</span> <span class="p">{</span>
+                  <span class="k">await</span> <span class="n">authNotifier</span><span class="o">.</span><span class="na">signOut</span><span class="p">();</span>
+                  <span class="n">ScaffoldMessenger</span><span class="o">.</span><span class="na">of</span><span class="p">(</span><span class="n">context</span><span class="p">)</span><span class="o">.</span><span class="na">showSnackBar</span><span class="p">(</span><span class="n">SnackBar</span><span class="p">(</span><span class="nl">content:</span> <span class="n">Text</span><span class="p">(</span><span class="s">'Signed out!'</span><span class="p">)));</span>
+                <span class="p">},</span>
+                <span class="nl">child:</span> <span class="n">Text</span><span class="p">(</span><span class="s">'Sign Out'</span><span class="p">),</span>
+              <span class="p">),</span>
+            <span class="p">]</span> <span class="k">else</span> <span class="p">...[</span>
+              <span class="n">TextField</span><span class="p">(</span>
+                <span class="nl">controller:</span> <span class="n">TextEditingController</span><span class="p">(),</span>
+                <span class="nl">decoration:</span> <span class="n">InputDecoration</span><span class="p">(</span><span class="nl">labelText:</span> <span class="s">'Email'</span><span class="p">),</span>
+              <span class="p">),</span>
+              <span class="n">TextField</span><span class="p">(</span>
+                <span class="nl">controller:</span> <span class="n">TextEditingController</span><span class="p">(),</span>
+                <span class="nl">decoration:</span> <span class="n">InputDecoration</span><span class="p">(</span><span class="nl">labelText:</span> <span class="s">'Password'</span><span class="p">),</span>
+                <span class="nl">obscureText:</span> <span class="kc">true</span><span class="p">,</span>
+              <span class="p">),</span>
+              <span class="n">ElevatedButton</span><span class="p">(</span>
+                <span class="nl">onPressed:</span> <span class="p">()</span> <span class="kd">async</span> <span class="p">{</span>
+                  <span class="k">try</span> <span class="p">{</span>
+                    <span class="k">await</span> <span class="n">authNotifier</span><span class="o">.</span><span class="na">signIn</span><span class="p">(</span><span class="s">'email@example.com'</span><span class="p">,</span> <span class="s">'password123'</span><span class="p">);</span>
+                    <span class="n">ScaffoldMessenger</span><span class="o">.</span><span class="na">of</span><span class="p">(</span><span class="n">context</span><span class="p">)</span><span class="o">.</span><span class="na">showSnackBar</span><span class="p">(</span><span class="n">SnackBar</span><span class="p">(</span><span class="nl">content:</span> <span class="n">Text</span><span class="p">(</span><span class="s">'Signed in!'</span><span class="p">)));</span>
+                  <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="n">ScaffoldMessenger</span><span class="o">.</span><span class="na">of</span><span class="p">(</span><span class="n">context</span><span class="p">)</span><span class="o">.</span><span class="na">showSnackBar</span><span class="p">(</span><span class="n">SnackBar</span><span class="p">(</span><span class="nl">content:</span> <span class="n">Text</span><span class="p">(</span><span class="s">'Sign in failed: </span><span class="si">$e</span><span class="s">'</span><span class="p">)));</span>
+                  <span class="p">}</span>
+                <span class="p">},</span>
+                <span class="nl">child:</span> <span class="n">Text</span><span class="p">(</span><span class="s">'Sign In'</span><span class="p">),</span>
+              <span class="p">),</span>
+            <span class="p">],</span>
+          <span class="p">],</span>
+        <span class="p">),</span>
+      <span class="p">),</span>
+    <span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div> <h3 id="explanation">Explanation:</h3> <ul> <li>The <code class="language-plaintext highlighter-rouge">authState.value</code> checks whether the user is authenticated or not. If the user is signed in, it displays their email and a sign-out button. If not, it shows the sign-in form.</li> <li>The <code class="language-plaintext highlighter-rouge">signIn</code> and <code class="language-plaintext highlighter-rouge">signOut</code> methods are accessed through the <code class="language-plaintext highlighter-rouge">authNotifier</code>, which manages the authentication state.</li> </ul> <h2 id="handling-errors">Handling Errors</h2> <p>To provide feedback in case of an error, we can catch exceptions thrown by Firebase’s authentication methods, such as incorrect passwords or missing user accounts, and display them to the user.</p> <p>Here’s an example of how we can handle errors during sign-in:</p> <div class="language-dart highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">ElevatedButton</span><span class="p">(</span>
+  <span class="nl">onPressed:</span> <span class="p">()</span> <span class="kd">async</span> <span class="p">{</span>
+    <span class="k">try</span> <span class="p">{</span>
+      <span class="k">await</span> <span class="n">ref</span><span class="o">.</span><span class="na">read</span><span class="p">(</span><span class="n">authNotifierProvider</span><span class="o">.</span><span class="na">notifier</span><span class="p">)</span><span class="o">.</span><span class="na">signIn</span><span class="p">(</span><span class="s">'email@example.com'</span><span class="p">,</span> <span class="s">'password123'</span><span class="p">);</span>
+    <span class="p">}</span> <span class="kd">on</span> <span class="n">FirebaseAuthException</span> <span class="k">catch</span> <span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kt">String</span> <span class="n">errorMessage</span><span class="p">;</span>
+      <span class="k">switch</span> <span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="na">code</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">case</span> <span class="s">'user-not-found'</span><span class="o">:</span>
+          <span class="n">errorMessage</span> <span class="o">=</span> <span class="s">'No user found for that email.'</span><span class="p">;</span>
+          <span class="k">break</span><span class="p">;</span>
+        <span class="k">case</span> <span class="s">'wrong-password'</span><span class="o">:</span>
+          <span class="n">errorMessage</span> <span class="o">=</span> <span class="s">'Wrong password provided.'</span><span class="p">;</span>
+          <span class="k">break</span><span class="p">;</span>
+        <span class="k">default</span><span class="o">:</span>
+          <span class="n">errorMessage</span> <span class="o">=</span> <span class="s">'Something went wrong. Please try again.'</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="n">ScaffoldMessenger</span><span class="o">.</span><span class="na">of</span><span class="p">(</span><span class="n">context</span><span class="p">)</span><span class="o">.</span><span class="na">showSnackBar</span><span class="p">(</span><span class="n">SnackBar</span><span class="p">(</span><span class="nl">content:</span> <span class="n">Text</span><span class="p">(</span><span class="n">errorMessage</span><span class="p">)));</span>
+    <span class="p">}</span>
+  <span class="p">},</span>
+  <span class="nl">child:</span> <span class="n">Text</span><span class="p">(</span><span class="s">'Sign In'</span><span class="p">),</span>
+<span class="p">);</span>
+</code></pre></div></div> <p>This pattern allows us to catch Firebase-specific exceptions and provide the user with actionable feedback.</p> <h2 id="conclusion">Conclusion</h2> <p>In this article, we demonstrated how to integrate Firebase Authentication with Riverpod using the <code class="language-plaintext highlighter-rouge">StreamNotifier</code> API. This approach provides a reactive and efficient way to manage authentication state in a Flutter app. We covered how to set up the FirebaseAuth provider, manage the user’s authentication state, handle sign-in and sign-out functionality, and show meaningful error messages to users.</p> <p>By combining the power of Firebase and Riverpod, you can build secure, scalable, and maintainable authentication flows in your Flutter applications.</p>]]></content><author><name></name></author><category term="flutter,"/><category term="riverpod,"/><category term="firebase-auth,"/><category term="authentication"/><summary type="html"><![CDATA[Learn how to manage Firebase Authentication in Flutter using Riverpod and StreamNotifier.]]></summary></entry><entry><title type="html">Getting started with Riverpod in Flutter</title><link href="https://varedisy.github.io/blog/2024/riverpod-getting-started/" rel="alternate" type="text/html" title="Getting started with Riverpod in Flutter"/><published>2024-09-04T10:00:00+00:00</published><updated>2024-09-04T10:00:00+00:00</updated><id>https://varedisy.github.io/blog/2024/riverpod-getting-started</id><content type="html" xml:base="https://varedisy.github.io/blog/2024/riverpod-getting-started/"><![CDATA[<h2 id="introduction">Introduction</h2> <p>Riverpod is a powerful state management solution for Flutter, providing a clean, testable, and scalable way to manage state across your app. In this guide, we’ll walk you through getting started with Riverpod, from installation to creating and consuming providers, and even making network requests using Riverpod.</p> <h2 id="installing-riverpod">Installing Riverpod</h2> <p>To get started with Riverpod, you first need to add the required dependencies to your <code class="language-plaintext highlighter-rouge">pubspec.yaml</code>. Here’s how you can do that:</p> <h3 id="adding-dependencies">Adding dependencies</h3> <p>Open your terminal and run the following commands to install the necessary packages:</p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>flutter pub add flutter_riverpod
+flutter pub add riverpod_annotation
+flutter pub add dev:riverpod_generator
+flutter pub add dev:build_runner
+flutter pub add dev:custom_lint
+flutter pub add dev:riverpod_lint
+</code></pre></div></div> <p>Alternatively, you can manually add them to your <code class="language-plaintext highlighter-rouge">pubspec.yaml</code> file:</p> <div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">name</span><span class="pi">:</span> <span class="s">my_app_name</span>
+<span class="na">environment</span><span class="pi">:</span>
+  <span class="na">sdk</span><span class="pi">:</span> <span class="s2">"</span><span class="s">&gt;=3.0.0</span><span class="nv"> </span><span class="s">&lt;4.0.0"</span>
+  <span class="na">flutter</span><span class="pi">:</span> <span class="s2">"</span><span class="s">&gt;=3.0.0"</span>
+
+<span class="na">dependencies</span><span class="pi">:</span>
+  <span class="na">flutter</span><span class="pi">:</span>
+    <span class="na">sdk</span><span class="pi">:</span> <span class="s">flutter</span>
+  <span class="na">flutter_riverpod</span><span class="pi">:</span> <span class="s">^2.5.1</span>
+  <span class="na">riverpod_annotation</span><span class="pi">:</span> <span class="s">^2.3.5</span>
+
+<span class="na">dev_dependencies</span><span class="pi">:</span>
+  <span class="na">build_runner</span><span class="pi">:</span>
+  <span class="na">custom_lint</span><span class="pi">:</span>
+  <span class="na">riverpod_generator</span><span class="pi">:</span> <span class="s">^2.4.3</span>
+  <span class="na">riverpod_lint</span><span class="pi">:</span> <span class="s">^2.3.13</span>
+</code></pre></div></div> <p>After adding the dependencies, run:</p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>flutter pub get
+</code></pre></div></div> <p>This will install all required packages.</p> <p>Next, to generate code with Riverpod, run the following command:</p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>flutter pub run build_runner watch
+</code></pre></div></div> <h2 id="creating-a-provider">Creating a Provider</h2> <p>Now that you have Riverpod installed, let’s create your first provider. Providers in Riverpod store a value that can be accessed and updated throughout the app.</p> <p>Here’s an example of a simple provider that returns a string:</p> <div class="language-dart highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="s">'package:riverpod_annotation/riverpod_annotation.dart'</span><span class="o">;</span>
+
+<span class="kn">part</span> <span class="s">'main.g.dart'</span><span class="o">;</span>
+
+<span class="nd">@riverpod</span>
+<span class="kt">String</span> <span class="nf">helloWorld</span><span class="p">(</span><span class="n">HelloWorldRef</span> <span class="n">ref</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="s">'Hello world'</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div> <p>The <code class="language-plaintext highlighter-rouge">@riverpod</code> annotation enables code generation, creating the <code class="language-plaintext highlighter-rouge">helloWorldProvider</code> for you.</p> <h2 id="consuming-providers">Consuming Providers</h2> <p>To use the provider in your Flutter UI, you need to wrap your widget tree with a <code class="language-plaintext highlighter-rouge">ProviderScope</code>. This is where Riverpod stores the state for all your providers:</p> <div class="language-dart highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">runApp</span><span class="p">(</span>
+    <span class="n">ProviderScope</span><span class="p">(</span>
+      <span class="nl">child:</span> <span class="n">MyApp</span><span class="p">(),</span>
+    <span class="p">),</span>
+  <span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div> <p>Inside your widgets, you can consume the provider using the <code class="language-plaintext highlighter-rouge">ref.watch()</code> method:</p> <div class="language-dart highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="s">'package:flutter/material.dart'</span><span class="o">;</span>
+<span class="kn">import</span> <span class="s">'package:flutter_riverpod/flutter_riverpod.dart'</span><span class="o">;</span>
+
+<span class="kd">class</span> <span class="nc">MyApp</span> <span class="kd">extends</span> <span class="n">ConsumerWidget</span> <span class="p">{</span>
+  <span class="nd">@override</span>
+  <span class="n">Widget</span> <span class="n">build</span><span class="p">(</span><span class="n">BuildContext</span> <span class="n">context</span><span class="p">,</span> <span class="n">WidgetRef</span> <span class="n">ref</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">final</span> <span class="kt">String</span> <span class="n">value</span> <span class="o">=</span> <span class="n">ref</span><span class="o">.</span><span class="na">watch</span><span class="p">(</span><span class="n">helloWorldProvider</span><span class="p">);</span>
+
+    <span class="k">return</span> <span class="n">MaterialApp</span><span class="p">(</span>
+      <span class="nl">home:</span> <span class="n">Scaffold</span><span class="p">(</span>
+        <span class="nl">appBar:</span> <span class="n">AppBar</span><span class="p">(</span><span class="nl">title:</span> <span class="kd">const</span> <span class="n">Text</span><span class="p">(</span><span class="s">'Riverpod Example'</span><span class="p">)),</span>
+        <span class="nl">body:</span> <span class="n">Center</span><span class="p">(</span>
+          <span class="nl">child:</span> <span class="n">Text</span><span class="p">(</span><span class="n">value</span><span class="p">),</span>
+        <span class="p">),</span>
+      <span class="p">),</span>
+    <span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div> <p>Running this app will display “Hello world” on the screen.</p> <h2 id="network-requests-with-riverpod">Network Requests with Riverpod</h2> <p>Riverpod also simplifies making network requests. Let’s make a network request using a provider to fetch data from an API.</p> <p>First, define a model for the response data:</p> <div class="language-dart highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="s">'package:freezed_annotation/freezed_annotation.dart'</span><span class="o">;</span>
+
+<span class="kn">part</span> <span class="s">'activity.freezed.dart'</span><span class="o">;</span>
+<span class="kn">part</span> <span class="s">'activity.g.dart'</span><span class="o">;</span>
+
+<span class="nd">@freezed</span>
+<span class="kd">class</span> <span class="nc">Activity</span> <span class="k">with</span> <span class="n">_$Activity</span> <span class="p">{</span>
+  <span class="kd">factory</span> <span class="n">Activity</span><span class="p">({</span>
+    <span class="kd">required</span> <span class="kt">String</span> <span class="n">activity</span><span class="p">,</span>
+    <span class="kd">required</span> <span class="kt">String</span> <span class="n">type</span><span class="p">,</span>
+    <span class="kd">required</span> <span class="kt">int</span> <span class="n">participants</span><span class="p">,</span>
+    <span class="kd">required</span> <span class="kt">double</span> <span class="n">price</span><span class="p">,</span>
+  <span class="p">})</span> <span class="o">=</span> <span class="n">_Activity</span><span class="p">;</span>
+
+  <span class="kd">factory</span> <span class="n">Activity</span><span class="o">.</span><span class="na">fromJson</span><span class="p">(</span><span class="kt">Map</span><span class="p">&lt;</span><span class="kt">String</span><span class="p">,</span> <span class="kd">dynamic</span><span class="p">&gt;</span> <span class="n">json</span><span class="p">)</span> <span class="o">=</span><span class="p">&gt;</span> <span class="n">_$ActivityFromJson</span><span class="p">(</span><span class="n">json</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div> <p>Next, create a provider that makes the HTTP request:</p> <div class="language-dart highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="s">'dart:convert'</span><span class="o">;</span>
+<span class="kn">import</span> <span class="s">'package:http/http.dart'</span> <span class="k">as</span> <span class="n">http</span><span class="o">;</span>
+<span class="kn">import</span> <span class="s">'package:riverpod_annotation/riverpod_annotation.dart'</span><span class="o">;</span>
+<span class="kn">import</span> <span class="s">'activity.dart'</span><span class="o">;</span>
+
+<span class="kn">part</span> <span class="s">'provider.g.dart'</span><span class="o">;</span>
+
+<span class="nd">@riverpod</span>
+<span class="n">Future</span><span class="p">&lt;</span><span class="n">Activity</span><span class="p">&gt;</span> <span class="n">activity</span><span class="p">(</span><span class="n">ActivityRef</span> <span class="n">ref</span><span class="p">)</span> <span class="kd">async</span> <span class="p">{</span>
+  <span class="kd">final</span> <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="n">http</span><span class="o">.</span><span class="na">get</span><span class="p">(</span><span class="kt">Uri</span><span class="o">.</span><span class="na">https</span><span class="p">(</span><span class="s">'www.boredapi.com'</span><span class="p">,</span> <span class="s">'/api/activity'</span><span class="p">));</span>
+  <span class="kd">final</span> <span class="n">json</span> <span class="o">=</span> <span class="n">jsonDecode</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="na">body</span><span class="p">)</span> <span class="k">as</span> <span class="kt">Map</span><span class="p">&lt;</span><span class="kt">String</span><span class="p">,</span> <span class="kd">dynamic</span><span class="p">&gt;;</span>
+  <span class="k">return</span> <span class="n">Activity</span><span class="o">.</span><span class="na">fromJson</span><span class="p">(</span><span class="n">json</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div> <p>Finally, consume this provider in your UI:</p> <div class="language-dart highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Home</span> <span class="kd">extends</span> <span class="n">ConsumerWidget</span> <span class="p">{</span>
+  <span class="nd">@override</span>
+  <span class="n">Widget</span> <span class="n">build</span><span class="p">(</span><span class="n">BuildContext</span> <span class="n">context</span><span class="p">,</span> <span class="n">WidgetRef</span> <span class="n">ref</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">final</span> <span class="n">activity</span> <span class="o">=</span> <span class="n">ref</span><span class="o">.</span><span class="na">watch</span><span class="p">(</span><span class="n">activityProvider</span><span class="p">);</span>
+
+    <span class="k">return</span> <span class="n">Scaffold</span><span class="p">(</span>
+      <span class="nl">appBar:</span> <span class="n">AppBar</span><span class="p">(</span><span class="nl">title:</span> <span class="kd">const</span> <span class="n">Text</span><span class="p">(</span><span class="s">'Random Activity'</span><span class="p">)),</span>
+      <span class="nl">body:</span> <span class="n">Center</span><span class="p">(</span>
+        <span class="nl">child:</span> <span class="n">activity</span><span class="o">.</span><span class="na">when</span><span class="p">(</span>
+          <span class="nl">data:</span> <span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">=</span><span class="p">&gt;</span> <span class="n">Text</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="na">activity</span><span class="p">),</span>
+          <span class="nl">loading:</span> <span class="p">()</span> <span class="o">=</span><span class="p">&gt;</span> <span class="kd">const</span> <span class="n">CircularProgressIndicator</span><span class="p">(),</span>
+          <span class="nl">error:</span> <span class="p">(</span><span class="n">err</span><span class="p">,</span> <span class="n">stack</span><span class="p">)</span> <span class="o">=</span><span class="p">&gt;</span> <span class="n">Text</span><span class="p">(</span><span class="s">'Error: </span><span class="si">$err</span><span class="s">'</span><span class="p">),</span>
+        <span class="p">),</span>
+      <span class="p">),</span>
+    <span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div> <p>With this setup, Riverpod manages network requests and state changes efficiently.</p> <h2 id="conclusion">Conclusion</h2> <p>Riverpod provides a scalable, testable solution for state management in Flutter, making it easy to handle everything from simple values to asynchronous network requests. In this guide, we covered installing Riverpod, creating providers, consuming them, and making network requests. Now you’re ready to explore the full power of Riverpod in your Flutter applications!</p>]]></content><author><name></name></author><category term="flutter,"/><category term="riverpod,"/><category term="state,"/><category term="dart"/><summary type="html"><![CDATA[A beginner's guide to state management with Riverpod in Flutter.]]></summary></entry><entry><title type="html">Entity Management with NgRx SignalStore: Streamlining State Management in Angular</title><link href="https://varedisy.github.io/blog/2024/ngrx-store-entities-angular/" rel="alternate" type="text/html" title="Entity Management with NgRx SignalStore: Streamlining State Management in Angular"/><published>2024-08-27T12:00:00+00:00</published><updated>2024-08-27T12:00:00+00:00</updated><id>https://varedisy.github.io/blog/2024/ngrx-store-entities-angular</id><content type="html" xml:base="https://varedisy.github.io/blog/2024/ngrx-store-entities-angular/"><![CDATA[<h2 id="introduction-to-entity-management">Introduction to Entity Management</h2> <p>Managing entities efficiently is a crucial aspect of state management in any application. NgRx SignalStore offers an elegant solution for handling entity collections through the <code class="language-plaintext highlighter-rouge">@ngrx/signals/entities</code> plugin. This plugin simplifies the management of entities, allowing you to focus on the logic and features of your Angular application without getting bogged down by the intricacies of state management.</p> <p>If you have never used NgRx SignalStore before, refer to the article <a href="https://varedisy.github.io/blog/2024/ngrx-store-angular/">Getting Started with NgRx SignalStore</a>.</p> <h2 id="using-withentities-feature">Using <code class="language-plaintext highlighter-rouge">withEntities</code> Feature</h2> <p>The <code class="language-plaintext highlighter-rouge">withEntities</code> feature is the cornerstone of entity management in SignalStore. It automatically generates signals that provide access to entity collections, including:</p> <ul> <li><strong>ids</strong>: A signal that returns an array of all entity IDs.</li> <li><strong>entityMap</strong>: A signal that returns a map of entities keyed by their IDs.</li> <li><strong>entities</strong>: A signal that returns an array of all entities, making it easy to work with the entire collection.</li> </ul> <p>Here’s an example of how to define a basic SignalStore with entity management:</p> <div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">computed</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@angular/core</span><span class="dl">'</span><span class="p">;</span>
 <span class="k">import</span> <span class="p">{</span> <span class="nx">signalStore</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@ngrx/signals</span><span class="dl">'</span><span class="p">;</span>
 <span class="k">import</span> <span class="p">{</span> <span class="nx">withEntities</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@ngrx/signals/entities</span><span class="dl">'</span><span class="p">;</span>
 
